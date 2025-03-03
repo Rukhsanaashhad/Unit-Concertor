@@ -1,100 +1,71 @@
-def convert_length(value, from_unit, to_unit):
-    # Conversion factors to meters
-    conversion_factors = {
-        'meters': 1,
-        'kilometers': 1000,
-        'miles': 1609.34,
-        'feet': 0.3048,
-        'inches': 0.0254,
-        'centimeters': 0.01,
-        'millimeters': 0.001
-    }
-    meters = value * conversion_factors[from_unit]
-    return meters / conversion_factors[to_unit]
+import streamlit as st  
 
-def convert_mass(value, from_unit, to_unit):
-    # Conversion factors to kilograms
-    conversion_factors = {
-        'kilograms': 1,
-        'grams': 0.001,
-        'pounds': 0.453592,
-        'ounces': 0.0283495
-    }
-    kilograms = value * conversion_factors[from_unit]
-    return kilograms / conversion_factors[to_unit]
+# Conversion functions  
+def length_converter(value, from_unit, to_unit):  
+    units = {  
+        'meters': 1,  
+        'kilometers': 0.001,  
+        'miles': 0.000621371,  
+        'feet': 3.28084,  
+    }  
+    return value * (units[to_unit] / units[from_unit])  
 
-def convert_temperature(value, from_unit, to_unit):
-    if from_unit == 'celsius':
-        if to_unit == 'fahrenheit':
-            return (value * 9/5) + 32
-        elif to_unit == 'kelvin':
-            return value + 273.15
-        return value
-    elif from_unit == 'fahrenheit':
-        if to_unit == 'celsius':
-            return (value - 32) * 5/9
-        elif to_unit == 'kelvin':
-            return (value - 32) * 5/9 + 273.15
-        return value
-    elif from_unit == 'kelvin':
-        if to_unit == 'celsius':
-            return value - 273.15
-        elif to_unit == 'fahrenheit':
-            return (value - 273.15) * 9/5 + 32
-        return value
+def weight_converter(value, from_unit, to_unit):  
+    units = {  
+        'grams': 1,  
+        'kilograms': 0.001,  
+        'pounds': 0.00220462,  
+        'ounces': 0.035274,  
+    }  
+    return value * (units[to_unit] / units[from_unit])  
 
-def convert_volume(value, from_unit, to_unit):
-    # Conversion factors to liters
-    conversion_factors = {
-        'liters': 1,
-        'milliliters': 0.001,
-        'gallons': 3.78541,
-        'quarts': 0.946353,
-        'pints': 0.473176,
-        'cups': 0.236588
-    }
-    liters = value * conversion_factors[from_unit]
-    return liters / conversion_factors[to_unit]
+def temperature_converter(value, from_unit, to_unit):  
+    if from_unit == 'Celsius':  
+        if to_unit == 'Fahrenheit':  
+            return value * 9/5 + 32  
+        elif to_unit == 'Kelvin':  
+            return value + 273.15  
+        return value  
+    elif from_unit == 'Fahrenheit':  
+        if to_unit == 'Celsius':  
+            return (value - 32) * 5/9  
+        elif to_unit == 'Kelvin':  
+            return (value - 32) * 5/9 + 273.15  
+        return value  
+    elif from_unit == 'Kelvin':  
+        if to_unit == 'Celsius':  
+            return value - 273.15  
+        elif to_unit == 'Fahrenheit':  
+            return (value - 273.15) * 9/5 + 32  
+        return value  
 
-def unit_converter():
-    print("Choose the type of conversion:")
-    print("1. Length")
-    print("2. Mass")
-    print("3. Temperature")
-    print("4. Volume")
-    
-    choice = input("Enter choice (1/2/3/4): ")
-    
-    if choice == '1':
-        value = float(input("Enter the length value: "))
-        from_unit = input("Enter the unit to convert from (meters, kilometers, miles, feet, inches, centimeters, millimeters): ").lower()
-        to_unit = input("Enter the unit to convert to (meters, kilometers, miles, feet, inches, centimeters, millimeters): ").lower()
-        result = convert_length(value, from_unit, to_unit)
-        print(f"{value} {from_unit} is equal to {result} {to_unit}.")
-        
-    elif choice == '2':
-        value = float(input("Enter the mass value: "))
-        from_unit = input("Enter the unit to convert from (kilograms, grams, pounds, ounces): ").lower()
-        to_unit = input("Enter the unit to convert to (kilograms, grams, pounds, ounces): ").lower()
-        result = convert_mass(value, from_unit, to_unit)
-        print(f"{value} {from_unit} is equal to {result} {to_unit}.")
-        
-    elif choice == '3':
-        value = float(input("Enter the temperature value: "))
-        from_unit = input("Enter the unit to convert from (celsius, fahrenheit, kelvin): ").lower()
-        to_unit = input("Enter the unit to convert to (celsius, fahrenheit, kelvin): ").lower()
-        result = convert_temperature(value, from_unit, to_unit)
-        print(f"{value} {from_unit} is equal to {result} {to_unit}.")
-        
-    elif choice == '4':
-        value = float(input("Enter the volume value: "))
-        from_unit = input("Enter the unit to convert from (liters, milliliters, gallons, quarts, pints, cups): ").lower()
-        to_unit = input("Enter the unit to convert to (liters, milliliters, gallons, quarts, pints, cups): ").lower()
-        result = convert_volume(value, from_unit, to_unit)
-        print(f"{value} {from_unit} is equal to {result} {to_unit}.")
-        
-    else:
-        print("Invalid choice!")
+# Streamlit UI  
+st.title("Unit Converter")  
 
-# Run the converter
-unit_converter()
+# Select the type of conversion  
+conversion_type = st.selectbox("Select conversion type", ["Length", "Weight", "Temperature"])  
+
+# Input value  
+value = st.number_input("Enter value to convert", 0.0)  
+
+# Conversion input based on the type selected  
+if conversion_type == "Length":  
+    from_unit = st.selectbox("From unit", ['meters', 'kilometers', 'miles', 'feet'])  
+    to_unit = st.selectbox("To unit", ['meters', 'kilometers', 'miles', 'feet'])  
+    if st.button("Convert"):  
+        result = length_converter(value, from_unit, to_unit)  
+        st.write(f"{value} {from_unit} is equal to {result} {to_unit}")  
+
+elif conversion_type == "Weight":  
+    from_unit = st.selectbox("From unit", ['grams', 'kilograms', 'pounds', 'ounces'])  
+    to_unit = st.selectbox("To unit", ['grams', 'kilograms', 'pounds', 'ounces'])  
+    if st.button("Convert"):  
+        result = weight_converter(value, from_unit, to_unit)  
+        st.write(f"{value} {from_unit} is equal to {result} {to_unit}")  
+
+elif conversion_type == "Temperature":  
+    from_unit = st.selectbox("From unit", ['Celsius', 'Fahrenheit', 'Kelvin'])  
+    to_unit = st.selectbox("To unit", ['Celsius', 'Fahrenheit', 'Kelvin'])  
+    if st.button("Convert"):  
+        result = temperature_converter(value, from_unit, to_unit)  
+        st.write(f"{value} {from_unit} is equal to {result} {to_unit}")  
